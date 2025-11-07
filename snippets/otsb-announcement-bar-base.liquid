@@ -1,0 +1,584 @@
+{%- liquid
+  if section.settings.enable == false or section.settings.show_only_on_homepage and template.name != "index"
+    assign show = false
+  else
+    assign show = true
+  endif
+  assign base_size = settings.text_base_size | times: 0.00875
+  assign check_text_color = section.settings.text_color | color_extract: 'alpha'
+  assign check_text_color_dark = section.settings.text_color_dark | color_extract: 'alpha'
+  assign check_backgound_color = section.settings.backgound_color | color_extract: 'alpha'
+  assign check_backgound_color_dark = section.settings.backgound_color_dark | color_extract: 'alpha'
+  if section.blocks.size == 1 or section.settings.enable_carousel_on_desktop == false
+    assign block = ' md:block'
+  endif
+
+  assign show_toolbar = false
+  if section.settings.show_language_selector or section.settings.show_social_icons or section.settings.show_currency_selector
+    assign show_toolbar = true
+  endif 
+-%}
+{% comment %}template app-embed-warning.liquid{% endcomment %}
+{% if request.design_mode %}
+  <style>
+    .otsb_nope {
+      display: none !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      visibility: hidden !important;
+      width: 0 !important;
+      opacity: 0 !important;
+    }
+    ._otsb_warning {
+      position: relative;
+      box-shadow: 0rem 0.1875rem 0.0625rem -0.0625rem rgba(26, 26, 26, 0.07);
+      border-radius: 1rem;
+    }
+    ._otsb_warning::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      box-shadow: 0.0625rem 0rem 0rem 0rem rgba(0, 0, 0, 0.13) inset,
+      -0.0625rem 0rem 0rem 0rem rgba(0, 0, 0, 0.13) inset, 0rem -0.0625rem 0rem 0rem rgba(0, 0, 0, 0.17) inset,
+      0rem 0.0625rem 0rem 0rem rgba(204, 204, 204, 0.5) inset;
+      border-radius: 1rem;
+      pointer-events: none;
+      mix-blend-mode: luminosity;
+    }
+  </style>
+  <div x-data="otsb_script_require" class="page-width" style="margin-top:36px;margin-bottom:36px">
+    <div class="_otsb_warning">
+      <div style="border-top-left-radius:1rem;border-top-right-radius:1rem;border:1px solid #fcaf0a;background:#fcb827;padding:1rem">
+        <div style="align-items:center;gap:8px;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between">
+          <div style="display:flex;gap:4px;flex-direction:row;flex-wrap:nowrap;justify-content:space-between">
+            <span style="display:block;height:20px;width:20px;max-height:100%;max-width:100%;margin:auto">
+              <svg viewBox="0 0 20 20" class="Polaris-Icon__Svg" focusable="false" aria-hidden="true">
+                <path d="M10 6.75a.75.75 0 0 1 .75.75v3.5a.75.75 0 1 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Z"></path><path d="M11 13.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path><path fill-rule="evenodd" d="M10 3.5c-1.045 0-1.784.702-2.152 1.447a449.26 449.26 0 0 1-2.005 3.847l-.028.052a403.426 403.426 0 0 0-2.008 3.856c-.372.752-.478 1.75.093 2.614.57.863 1.542 1.184 2.464 1.184h7.272c.922 0 1.895-.32 2.464-1.184.57-.864.465-1.862.093-2.614-.21-.424-1.113-2.147-2.004-3.847l-.032-.061a429.497 429.497 0 0 1-2.005-3.847c-.368-.745-1.107-1.447-2.152-1.447Zm-.808 2.112c.404-.816 1.212-.816 1.616 0 .202.409 1.112 2.145 2.022 3.88a418.904 418.904 0 0 1 2.018 3.875c.404.817 0 1.633-1.212 1.633h-7.272c-1.212 0-1.617-.816-1.212-1.633.202-.408 1.113-2.147 2.023-3.883a421.932 421.932 0 0 0 2.017-3.872Z"></path>
+              </svg>
+            </span>
+            <h2 style="overflow-wrap:anywhere;word-break:normal;font-size:100%;font-weight:650;line-height:1.25;color:rgb(37,26,0)">
+              App Embeds Are Disabled
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div style="padding:1rem;color:rgb(37,26,0)">
+        <p>
+          To use this section, the app embeds of OT: Theme Sections must be enabled in the theme editor. Please follow
+          these steps to activate them:
+        </p>
+        <ul>
+          <li>In the left panel, click the last icon that says <b>“App embeds”</b>.</li>
+          <li>Enter <b>“OT”</b> on the search bar to quickly find and embed the apps from OT: Theme Sections.</li>
+          <li>
+            Turn on the Toggle buttons of "Section Builder Script" and "Section Builder Style", then click <b>Save</b>.
+          </li>
+        </ul>
+        <p>
+          Please refer to the User Guide
+          <a
+            href="https://support.omnithemes.com/blogs/ot-theme-sections-get-started/1-embed-app-to-shopify-theme"
+            target="_blank"
+          >here</a
+          >
+        </p>
+        <p>
+          For further support: feel free to contact us at
+          <a href="mailto:support@omnithemes.com">support@omnithemes.com</a>!
+        </p>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% comment %}endtemplate{% endcomment %}
+<div class="otsb_nope" x-data="otsb_script_1">
+{%- capture styles -%}
+{%- style -%}
+  #shopify-section-{{section.id}} .otsb_trademark_root {
+    user-select:none;
+    color:#999;
+    font-size:.75em;
+    text-align:right;
+  }
+  #shopify-section-{{section.id}} .otsb_trademark_root a {
+    color:#999;
+    background:none;
+    text-decoration: none;
+  }
+  .down ~ .otsb-section-announcement #otsb-x-announcement-{{ section.id }},
+  .shopify-section-header-hidden ~ .otsb-section-announcement #otsb-x-announcement-{{ section.id }} {
+    top: 0!important;
+  }
+  .otsb-section-announcement ~ .shopify-section-header-hidden {
+    display: none;
+  }
+  header.up {
+    position:sticky;
+    z-index: 9;
+    opacity: 1;
+  }
+  #x-announcement-bar .arrow {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: {{ section.settings.text_color }};
+  }
+  #otsb-x-announcement-{{ section.id }} .button {
+    min-width: auto;
+    min-height: auto;
+  }
+  .shopify-section-header-hidden #otsb-x-announcement-{{ section.id }} {
+    position: fixed;
+    width: 100%;
+    top: 0;
+  }
+  {% if section.settings.enable_sticky_bar %}
+    .shopify-section-header-sticky ~ #otsb-x-announcement-{{ section.id }}.section-announcement {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+    }
+  {% endif %}
+  #otsb-x-announcement-{{ section.id }} .country-options,
+  #otsb-x-announcement-{{ section.id }} .locale-options {
+    background: {{ section.settings.backgound_color }};
+    right: 0;
+    left: auto;
+  }
+  #otsb-x-announcement-{{ section.id }} .social-list a {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+  }
+  #otsb-x-announcement-{{ section.id }} .social-list {
+    gap: 1rem;
+    padding-right: 0;
+    margin-right: 0;
+    border-right: 0;
+  }
+  #otsb-x-announcement-{{ section.id }} .link-list {
+    padding-right: 10px;
+  }
+  #otsb-x-announcement-{{ section.id }} {
+    {% if section.settings.backgound_color != blank and check_backgound_color and check_backgound_color != 0.0 %}
+      background: {{ section.settings.backgound_color }};
+    {% else %}
+      background: rgba(var(--colors-background));
+    {% endif %}
+    {% unless section.settings.textlink_color_light.alpha == 0.0 %}
+      --colors-text-link: {{ section.settings.textlink_color_light.red }},{{ section.settings.textlink_color_light.green }},{{ section.settings.textlink_color_light.blue }};
+    {% endunless %}
+  }
+  #otsb-x-announcement-{{ section.id }} .hover-text-link:hover,
+  #otsb-x-announcement-{{ section.id }} .announcement-bar_text a:hover,
+  #otsb-x-announcement-{{ section.id }} announcement-bar_text:hover {
+    color: rgb(var(--colors-text-link));
+    border-color: rgb(var(--colors-text-link));
+  }
+  #otsb-x-announcement-{{ section.id }} .announcement-bar_text {
+    {% if section.settings.text_color != blank and check_text_color and check_text_color != 0.0 %}
+      color: {{ section.settings.text_color }};
+      --colors-line-and-border: {{ section.settings.text_color.red }},{{ section.settings.text_color.green }},{{ section.settings.text_color.blue }};
+    {% else %}
+      color: rgb(var(--colors-text));
+      --colors-line-and-border: {{ settings.colors_text.red }}, {{ settings.colors_text.green }}, {{ settings.colors_text.blue }};
+    {% endif %}
+  }
+  #otsb-x-announcement-{{ section.id }} #selector-social {
+    flex-direction: row-reverse;
+    gap: 15px;
+  }
+  #otsb-x-announcement-{{ section.id }} .toolbar-align-left .social-list {
+    padding-left: 0;
+    margin-left: 0;
+    margin-right: 20px;
+    border-left: 0;
+  }
+{%- endstyle -%} 
+{%- endcapture -%}
+{% comment %} {%- assign before =  styles.size -%} {% endcomment %}
+{%- assign styles =  styles | strip_newlines | split: " " | join: " " | split: "*/" -%}
+{%- assign minified_style = "" -%}
+{%- for word in styles -%}
+	{%- assign new_word = word | split: "/*" | first | strip | replace: "; ", ";" | replace: "} ", "}" | replace: "{ ", "{" | replace: " {", "{" -%}
+    {%- assign minified_style = minified_style | append: new_word -%}
+{%- endfor -%}
+{% comment %} /* CSS minifed: {{ before }} --> {{ minified_style.size }} */ {% endcomment %}
+{{- minified_style  }}
+
+{%- if show -%}
+<div id="otsb-x-announcement-{{ section.id }}" class="otsb__root transition-transform duration-300 {% if section.settings.enable_sticky_bar %} otsb-sticky-bar {% endif %}"  {% if section.settings.enable_sticky_bar %} x-data="otsbStickyBar" data-otsb-sticky-bar x-init='init()' {% endif %}>
+  <div class="otsb-x-announcement-bar announcement-bar_container-{{ section.id }} ltr mx-auto flex items-center{% if section.settings.menu != blank %} has-menu-announcement{% endif %}{% if show_toolbar %} has-toolbar{% if section.settings.alignment == 'left' %} flex-row-reverse announcement-bar-right lg:pl-5 lg:pr-5{% else %} lg:pl-5 lg:pr-5 announcement-bar-left{% endif %}{% else %} lg:pl-5 lg:pr-5{% endif %}"
+  >
+    {%- if section.settings.menu != blank -%}
+      {%- style -%}
+        #otsb-x-announcement-{{ section.id }} .link-list .nav-link {
+          font-size: {{ section.settings.text_size_toolbar | times: 0.9 | round: 0  }}px;
+        }
+         @media screen and (min-width: 768px) {
+            #otsb-x-announcement-{{ section.id }} .link-list .nav-link {
+              font-size: {{ section.settings.text_size_toolbar }}px;
+            }
+          }
+      {%- endstyle -%}
+      <div class="flex items-center h-full overflow-hidden grow flex-1 w-full menu-position-{{ section.settings.menu_position }}{% if section.blocks.size < 1 %} announcement-bar-none{% endif %}{% if section.settings.menu_position == 'right' %} flex-row-reverse{% endif %}">
+        {%- if section.settings.menu != blank -%}
+          <ul class="link-list flex-wrap otsb-hidden lg:flex gap-x-3 items-center{% if section.blocks.size > 0 %} md:max-w-[200px] xl:max-w-sm{% endif %}{% if settings.lang_direction contains request.locale.iso_code %} rtl{% endif %}">
+            {%- for link in section.settings.menu.links -%}
+              <li class="utility-block announcement-bar_text pt-1.5 pb-1.5">
+                <a
+                  href="{{ link.url }}"
+                  class="nav-link relative hover-text-link inline-block p-break-words"
+                >
+                  {{ link.title }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {% endif %}
+    {% endif %}
+        {% if section.blocks.size > 0 %}
+          <div x-data id="x-slide-announcement-bar" class="disable-effect-hover grow flex-1 x-splide splide{% if section.settings.enable_carousel_on_desktop and section.blocks.size > 1 %} cursor-grab lg:pl-12 lg:pr-12{% else %} has-toolbar:lg:pr-5 has-toolbar:lg:pl-5{% endif %} overflow-hidden visible relative{%- if settings.lang_direction contains request.locale.iso_code %} rtl{%- endif %}"
+            {%- if section.blocks.size > 1 -%}
+              x-intersect.once='$store.otsb_xSplide.load($el, {
+                "type": "loop",
+                "speed": 1000,
+                "pagination": false,
+                "interval": {{ section.settings.change_bar_every | times: 1000 }},
+                {%- if settings.lang_direction contains request.locale.iso_code %} 
+                  "direction": "rtl",
+                {%- endif %}
+                {%- if section.settings.auto_switch_bar -%}
+                  "autoplay": true,
+                {%- endif -%}
+                {% if section.settings.enable_carousel_on_desktop == false -%} 
+                "mediaQuery": "min",
+                "breakpoints": {
+                  768: {
+                    "destroy": true
+                  }
+                },
+                {%- endif %}
+                "classes": {
+                  "arrows" : "{% if section.settings.show_navigation == false %}otsb-hidden {% else %}block{% endif %}"
+                }
+              })'
+            {%- endif -%}
+          >
+            <div class="splide__track x-pgw page-width mx-auto pl-0 pr-0">
+              <div class="splide__list w-full flex {{ block }}">
+              {%- for block in section.blocks -%}
+                {%- style -%}
+                  .text--{{ block.id }} .width-countdown {
+                     width: 7.0875rem;
+                  }
+                  .text--{{ block.id }},
+                  .btn--{{ block.id }} {
+                    font-size: {{ block.settings.text_size | times: 0.9 | round: 0 }}px;
+                  }
+                  assign width_countdown = text_size | times: 9
+                  @media screen and (min-width: 749px) {
+                    .text--{{ block.id }},
+                    .btn--{{ block.id }} {
+                      font-size: {{ block.settings.text_size }}px;
+                    }
+                  }
+                  .icon--{{ block.id }} {
+                    width: {{ block.settings.text_size }}px;
+                    height: {{ block.settings.text_size }}px;
+                  }
+                  .button.text_button_announ--{{ block.id }} {
+                    {% if block.settings.button_text_color.alpha == 0.0 %}
+                      color: {% if section.settings.buttons_color_mobile == "hover" %}rgb(var(--colors-button-text-hover)){% else %}rgb(var(--colors-button-text)){% endif %};
+                    {% else %}
+                      color: {{ block.settings.button_text_color }};
+                    {% endif %}
+                    {% if block.settings.button_color.alpha != 0.0 %}
+                      background: {{ block.settings.button_color }};
+                    {% else %}
+                      background: {% if section.settings.buttons_color_mobile == "hover" %}var(--colors-button-hover){% else %}rgba(var(--colors-button)){% endif %};
+                    {% endif %}
+                  }
+        
+                  @media(min-width: 768px){
+                    .button.text_button_announ--{{ block.id }} {
+                      {% if block.settings.button_text_color.alpha == 0.0 %}
+                        color: rgba(var(--colors-button-text-hover));
+                      {% else %}
+                        color: {{ block.settings.button_text_color }};
+                      {% endif %}
+                      {% if block.settings.button_color.alpha != 0.0 %}
+                        background: {{ block.settings.button_color }};
+                      {% endif %}
+                    }
+                  }
+                  .text-link-with-arrow--{{ block.id }} {
+                    {% unless block.settings.textlink_color_light.alpha == 0.0 %}
+                      color: {{ block.settings.textlink_color_light }};
+                    {% else %}
+                      color: rgb(var(--colors-text-link));
+                    {% endunless %}
+                  }
+                  .hyperlink-circle-color--{{ block.id }} {
+                    {% if block.settings.textlink_color_light.alpha == 0.0 %}
+                      background-color: rgba(var(--colors-text-link));
+                    {% else %}
+                      background-color: {{ block.settings.textlink_color_light }};
+                    {% endif %}
+                  }
+
+                  .otsb__root .button--{{ block.id }}, .button--{{ block.id }} *:before {
+                      {% if block.settings.button_color_mobile != "hover" %}
+                        --color-button-mobile: var(--color-button);
+                        --color-button-text-mobile: rgb(var(--color-button-text));
+                      {% else %}
+                        --color-button-mobile: var(--colors-button-hover);
+                        --color-button-text-mobile: rgb(var(--colors-button-text-hover));
+                      {% endif %}
+                    }
+                    .otsb__root .button--{{ block.id }} .otsb-button-text {
+                      white-space: nowrap;
+                    }
+                    .otsb__root .button--{{ block.id }}.otsb-btn__solid,
+                    .otsb__root .button--{{ block.id }}.otsb-btn__solid:before { 
+                      {%- unless block.settings.button_color.alpha == 0.0 -%}
+                        --colors-line-and-border: {{ block.settings.button_color.red }}, {{ block.settings.color_button.green }}, {{ block.settings.color_button.blue }};
+                        --color-button: {{ block.settings.button_color.red }}, {{ block.settings.button_color.green }}, {{ block.settings.button_color.blue }};
+                      {%- else -%}
+                        --colors-line-and-border: var(--color-button);
+                      {%- endunless -%}
+                      {%- unless block.settings.button_hover.alpha == 0.0 -%}
+                        --colors-button-hover: {{ block.settings.button_hover.red }}, {{ block.settings.button_hover.green }}, {{ block.settings.button_hover.blue }};
+                      {% else %}
+                        --colors-button-hover: 56, 56, 56;
+                      {%- endunless -%}
+                      {%- unless block.settings.button_text_color.alpha == 0.0 -%}
+                        --color-button-text: {{ block.settings.button_text_color.red }}, {{ block.settings.button_text_color.green }}, {{ block.settings.button_text_color.blue }};
+                      {%- endunless -%}
+                      {%- unless block.settings.button_text_hover.alpha == 0.0 -%}
+                        --colors-button-text-hover: {{ block.settings.button_text_hover.red }}, {{ block.settings.button_text_hover.green }}, {{ block.settings.button_text_hover.blue }};
+                      {%- endunless -%}
+                    }
+                    .otsb__root .button--{{ block.id }}.otsb-button-outline {
+                      {%- if block.settings.secondary_button_text.alpha != 0.0 -%}
+                        --colors-secondary-button: {{ block.settings.secondary_button_text.red }}, {{ block.settings.secondary_button_text.green }}, {{ block.settings.secondary_button_text.blue }}; 
+                        --colors-line-secondary-button: {{ block.settings.secondary_button_text.red }}, {{ block.settings.secondary_button_text.green }}, {{ block.settings.secondary_button_text.blue }}; 
+                        --background-secondary-button: transparent;
+                      {% else %}
+                        --colors-secondary-button: 0, 0, 0;
+                        --colors-line-secondary-button: 0, 0, 0;
+                      {% endif %}
+                      {%- if block.settings.secondary_button.alpha != 0.0 -%}
+                        --background-secondary-button: {{ block.settings.secondary_button.red }}, {{ block.settings.secondary_button.green }}, {{ block.settings.secondary_button.blue }}; 
+                        --colors-line-secondary-button: {{ block.settings.secondary_button.red }}, {{ block.settings.secondary_button.green }}, {{ block.settings.secondary_button.blue }}; 
+                      {% endif %}
+                    }
+                    
+                    .otsb__root .button--{{ block.id }}.otsb-btn__text-link, .button--{{ block.id }}.otsb-btn__text-link::after, .button--{{ block.id }}.otsb-btn__text-link::before {
+                      {% if block.settings.textlink_color.alpha != 0.0 %}
+                        --colors-text-link: {{ block.settings.textlink_color.red }}, {{ block.settings.textlink_color.green }}, {{ block.settings.textlink_color.blue }};
+                      {% else %}
+                        --colors-text-link: var(--color-link);
+                      {% endif %}
+                    }
+
+                    @media (min-width: {{ screen_lg }}px) {
+                      .otsb__root .otsb-block-button--{{ block.id }} {
+                        text-align: {{ section.settings.content_alignment }};
+                      }
+                    }
+                {%- endstyle -%}
+                <div x-slide-index="{{ forloop.index | minus: 1 }}" class="h-auto w-full flex items-center md:flex justify-center splide__slide x-splide-slide text-center py-2.5 pl-5 pr-5{% if section.settings.menu == blank %} lg:pr-5 lg:pl-5{% else %} lg:pl-0 lg:pr-0{% endif %}{% if forloop.index > 1 and section.settings.enable_carousel_on_desktop == false %} md:border-t md:border-solid{% endif %}" {{ block.shopify_attributes }}>
+                  {%- if block.settings.text != blank -%}
+                    <div 
+                      {% if block.settings.text contains '{count_down}' %}
+                        x-data="{ loading: true, textLoad: ' - ', days: 0, hours: 0, minutes: 0, seconds: 0 }"
+                        x-intersect.once='$nextTick(() => {
+                          $store.xHelper.countdown({
+                            "id": "{{ block.id }}",
+                            "timezone": {{ block.settings.timezone | default: 0 }},
+                            "end_year": {{ block.settings.end_year | default: 0 }},
+                            "end_month": {{ block.settings.end_month | default: 0 }},
+                            "end_day": {{ block.settings.end_day | default: 0 }},
+                            "end_hour": {{ block.settings.end_hour | default: 0 }},
+                            "end_minute": {{ block.settings.end_minute | default: 0 }}
+                          }, (canShow, s, m, h, d) => {
+                            days = d;
+                            hours = h;
+                            minutes = m;
+                            seconds = s;
+                            loading = false;
+                          })
+                        })'
+                      {% endif %}
+                      class="flex items-center flex-wrap justify-center gap-x-3 gap-y-2 ltr">
+                      {% if block.settings.text contains '{count_down}' %}
+                        {% capture countdown %}
+                          <span class="inline-block width-countdown">
+                            <span x-html="loading?textLoad:days">- </span>D&nbsp;&nbsp;
+                            <span x-html="loading?textLoad:hours">-</span> :  
+                            <span x-html="loading?textLoad:minutes">-</span> : 
+                            <span x-html="loading?textLoad:seconds">-</span>  
+                          </span>  
+                        {% endcapture %}
+                      {% endif %}
+                      <div class="text--{{ block.id }} announcement-bar_text flex gap-0 {%- if settings.lang_direction contains request.locale.iso_code %} order-1{% endif %}">
+                        {%- if block.settings.icon != 'none' -%}
+                          {% unless block.settings.custom_icon == blank and block.settings.another_icon == blank and block.settings.icon == 'another_icon' %}
+                            <div class="flex gap-0 items-center{% if settings.lang_direction contains request.locale.iso_code %} ml-2 md:ml-3 order-1{% else %} mr-2 md:mr-3{% endif %}">
+                              <span class="inline-block icon--{{ block.id }}">
+                                {% if block.settings.custom_icon == blank %}
+                                  {% if block.settings.another_icon != blank and block.settings.icon == 'another_icon' %}
+                                    {% render 'otsb-icon-new-alls', icon: block.settings.another_icon %}
+                                  {% else %}
+                                    {% render 'otsb-icon-labels-bags', icon: block.settings.icon, enable_announcement: true %}
+                                  {% endif %}
+                                {% else %}
+                                  {{ block.settings.custom_icon }}
+                                {% endif %}
+                              </span>
+                            </div>
+                          {% endunless %}
+                        {%- endif -%}
+                        {% assign text = block.settings.text | replace: "{count_down}", countdown %}
+                        {%- if block.settings.link != blank -%}
+                          <p>
+                            <a href="{{ block.settings.link }}"{% if block.settings.open_new_window %} target="_blank"{% endif %} class="button-link relative hover-text-link x-announcement-bar-block-data leading-[initial]"
+                            >{{ text }}</a>
+                          </p>
+                        {%- else -%}
+                          <p class="x-announcement-bar-block-data leading-[initial]">{{ text }}</p>
+                        {%- endif -%}                       
+                      </div> 
+                      {%- case block.type -%}
+                        {%- when 'announcement' -%}
+                          {%- if block.settings.button_label_or_code != blank -%}
+                            {% liquid
+                              assign otsb_fs_btn_classes = 'otsb-button otsb-btn button--' | append: block.id | append: ' text-center inline-flex border empty:otsb-hidden pl-2 pr-2 pt-0.5 pb-0.5  leading-normal items-center text-center justify-center'
+                              if block.settings.show_button_style == 'secondary'
+                                assign otsb_fs_btn_classes = otsb_fs_btn_classes | append: ' otsb-button-outline'
+                              elsif block.settings.show_button_style == 'text-link'
+                                assign otsb_fs_btn_classes = otsb_fs_btn_classes | append: ' otsb-btn__text-link'
+                              else
+                                assign otsb_fs_btn_classes = otsb_fs_btn_classes | append: ' otsb-btn__solid'
+                              endif
+                              unless block.settings.button_link
+                                assign otsb_fs_btn_classes = otsb_fs_btn_classes | append: ' hover:cursor-not-allowed opacity-70'
+                              endunless
+                              assign otsb_fs_btn_classes = otsb_fs_btn_classes | append: ' otsb-btn-' | append: block.settings.button_type
+                              assign otsb_fs_btn_classes = otsb_fs_btn_classes | append: ' otsb-btn__' | append: block.settings.button_animation
+                            %}
+                            <div class="flex items-center">
+                              {% if block.settings.button_link == blank %}
+                                <p class="btn--{{ block.id }} {{ otsb_fs_btn_classes }}">
+                                  {% render 'otsb-button-label', 
+                                  button_animation: block.settings.button_animation, 
+                                  custom_icon_button:block.settings.custom_icon_button,
+                                   button_label: block.settings.button_label_or_code, 
+                                   show_button_style: block.settings.show_button_style %} 
+                                </p>
+                              {%- else -%}
+                                <a{% if block.settings.button_link %} href="{{ block.settings.button_link }}"{% if block.settings.open_new_window_button %} target="_blank"{% endif %}{% else %} role="link" aria-disabled="true"{% endif %} class="btn--{{ block.id }} {{ otsb_fs_btn_classes }}">
+                                  {% render 'otsb-button-label', 
+                                  button_animation: block.settings.button_animation, 
+                                  custom_icon_button:block.settings.custom_icon_button,
+                                   button_label: block.settings.button_label_or_code, 
+                                   show_button_style: block.settings.show_button_style %}
+                                </a>
+                              {%- endif -%}
+                            </div>  
+                          {%- endif -%}
+                        {%- when 'promo_code' -%}
+                          {% if block.settings.button_label_or_code != blank %}
+                            {% style %}
+                            #otsb-x-announcement-{{ section.id }} .button-coupon--{{ block.id }} {
+                              {%- unless block.settings.coupon_color.alpha == 0.0 -%}
+                                color: {{ block.settings.coupon_color }};
+                                border-color: {{ block.settings.coupon_color }};
+                              {% else %}
+                                color: var(--colors-button-hover);
+                                border-color: var(--colors-button-hover);
+                              {%- endunless -%}
+                            }
+                            {% endstyle %}
+                            <div>
+                              <button :title="coppySuccess?'Copied':'Copy code'" x-data='otsb_xCounponCode' x-on:click="copyCode()" class="button-coupon--{{ block.id }} border rounded-full border-dashed overflow-hidden items-center flex btn--{{ block.id }} none_transition empty:hidden center pl-2 pr-2 pt-1 pb-1 md:pl-3 md:pr-2.5">
+                                <p x-ref="code_value">
+                                  {{ block.settings.button_label_or_code | escape }}
+                                </p>
+                                <div class="md:ml-4 ml-3 flex items-center">
+                                  <span class="icon--{{ block.id }} inline-block" x-show="!coppySuccess"
+                                    x-transition:enter="transition-all absolute ease-in-out duration-300"
+                                    x-transition:enter-start="opacity-0 absolute transform translate-y-full"
+                                    x-transition:enter-end="opacity-100 absolute transform translate-y-0"
+                                    x-transition:leave="transition-all absolute ease-in-out duration-300"
+                                    x-transition:leave-end="opacity-0 transform absolute -translate-y-full">
+                                  {% render 'otsb-icon-alls', icon: 'icon-copy' %}
+                                  </span>
+                                  <span class="icon--{{ block.id }} inline-block" x-show="coppySuccess" x-cloak
+                                    x-transition:enter="transition-all ease-in-out duration-300"
+                                    x-transition:enter-start="opacity-0 transform translate-y-full"
+                                    x-transition:enter-end="opacity-100 transform translate-y-0"
+                                    x-transition:leave="transition ease-in-out duration-300"
+                                    x-transition:leave-end="opacity-0 transform -translate-y-full">
+                                    {% render 'otsb-icon-alls', icon: 'icon-check' %}
+                                  </span>
+                                </div>
+                              </button>
+                            </div>
+                            <script src="{{ 'otsb-coupon-code.min.js' | asset_url }}" defer></script>
+                          {% endif %}
+                      {%- endcase -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endfor -%}
+              </div>
+            </div>
+            {%- if section.settings.show_navigation and section.settings.enable_carousel_on_desktop and section.blocks.size > 1 -%}
+              <div class="otsb-hidden lg:block splide__arrows">
+                <button class="splide__arrow splide__arrow--prev announcement-bar_text absolute none_border z-10 top-1/2 opacity-70 -translate-y-1/2 rtl:md:right-3 rtl:lg:right-4 rtl:-rotate-90 rtl:left-auto md:left-3 lg:left-4 rotate-90 disabled:cursor-not-allowed bg-none bg-inherit pt-2.5 pr-2.5 pb-2.5 pl-2.5" aria-label="previous slide">
+                  <span class="block w-4 h-4">{% render 'otsb-icon-alls', icon: 'icon-caret' %}</span>
+                </button>
+                <button class="splide__arrow splide__arrow--next announcement-bar_text absolute none_border z-10 top-1/2 opacity-70 -translate-y-1/2 rtl:md:left-3 rtl:lg:left-4 rtl:rotate-90 rtl:right-auto  md:right-3 lg:right-4 -rotate-90 disabled:cursor-not-allowed bg-none bg-inherit pt-2.5 pr-2.5 pb-2.5 pl-2.5" aria-label="next slide">
+                  <span class="block w-4 h-4">{% render 'otsb-icon-alls', icon: 'icon-caret' %}</span>
+                </button>
+              </div>
+            {%- endif -%}
+          </div>
+        {% endif %}
+    {%- if section.settings.menu != blank -%}
+    </div>
+    {% endif %}
+    {%- if show_toolbar -%}
+      {%- style -%}
+        .announcement-bar-toolbar #localization_form button {
+          font-size: {{ section.settings.text_size_toolbar | times: 0.9 | round: 0  }}px;
+        }
+         @media screen and (min-width: 768px) {
+            .announcement-bar-toolbar #localization_form button {
+              font-size: {{ section.settings.text_size_toolbar }}px;
+            }
+          }
+      {%- endstyle -%}
+      <div class="announcement-bar_text announcement-bar-toolbar toolbar-align-{{ section.settings.alignment }} otsb-hidden relative lg:flex items-center">
+        {% render 'otsb-toolbar', 
+          show_currency_selector: section.settings.show_currency_selector, 
+          show_language_selector: section.settings.show_language_selector, 
+          show_social_icons: section.settings.show_social_icons,
+          toolbar_align: section.settings.alignment
+        %}
+      </div>
+    {%- endif -%} 
+  </div>
+  </div>
+{%- endif -%}
+{% if section.settings.enable_sticky_bar %}
+<script src="{{ 'otsb-announcement-bar.min.js' | asset_url }}" defer></script>
+{% endif %}
+</div>
